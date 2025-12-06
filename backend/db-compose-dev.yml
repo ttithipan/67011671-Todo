@@ -1,0 +1,29 @@
+services:
+  mysql_db:
+    image: mysql:${MYSQL_VERSION} # Uses version from .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306" # Maps host port from .env
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - mysql_db
+    environment:
+      PMA_HOST: mysql_db
+      # It is safer not to hardcode the root password here, 
+      # but if you want auto-login, use the variable:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+    ports:
+      - "${PMA_HOST_PORT}:80"
+    restart: always
+
+volumes:
+  mysql_data:
