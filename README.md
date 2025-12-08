@@ -21,7 +21,7 @@ DB_HOST=                #Fill in Database host.
 DB_PORT=                #Fill in port number for database host.
 ```
 
-In  ```frontend-vite```, make a ```.env``` file with the following variables.
+In  ```/frontend```, make a ```.env``` file with the following variables.
 ```
 VITE_API_HOST=          #Fill in hostname from API_HOST.
 VITE_API_PORT=          #Fill in port number from API_PORT.
