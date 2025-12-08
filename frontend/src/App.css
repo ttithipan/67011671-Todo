@@ -66,14 +66,15 @@ p {
   border: 1px solid var(--text-dim);
   padding: 0.5rem;
   border-radius: 8px;
-  height: 3rem; /* Default height (Desktop) */
+  height: 4rem; /* Default height (Desktop) */
   text-decoration: none; /* Default state */
 }
 
-/* Logic: if (todo.done) */
+/* Logic: if (todo.done) 
 .todo-item.done {
   text-decoration: line-through;
 }
+No need for strikethrough*/
 
 /* Logic: visualViewport.width < '720' */
 @media (max-width: 719px) {
@@ -131,13 +132,18 @@ body::after {
 .app-container{
   height: 90vh;
   width: 90vw;
-  margin: 5vw;
+  margin: 0;
   padding: 2%;
+}
+.top-bar{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .todo-list{
-	overflow-y: auto;
-	height: 60vh;
+  overflow-y: auto;
+  height: 70vh;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
@@ -155,6 +161,9 @@ body::after {
   background-color: #cc2929;
 }
 
+.title{
+	font-size: larger;
+}
 
 
 @keyframes gridMove {

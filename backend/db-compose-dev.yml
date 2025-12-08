@@ -9,7 +9,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3306:3306" # Maps host port from .env
+      - "${DB_PORT}:3306" # Maps host port from .env
     restart: always
 
   phpmyadmin:

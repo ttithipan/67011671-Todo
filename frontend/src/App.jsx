@@ -6,7 +6,9 @@ import './App.css'
 import TextField from '@mui/material/TextField'
 import Checkbox from '@mui/material/Checkbox'
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_HOST = import.meta.env.VITE_API_HOST || 'localhost';
+const API_PORT = import.meta.env.VITE_API_PORT || '5001';
+const API_URL = `http://${API_HOST}:${API_PORT}`;
 
 function App() {
     const [currentUser, setCurrentUser] = useState(null)
@@ -33,7 +35,10 @@ function App() {
     return (
         <div className="body">
             <div className='app-container'>
-                <h1 className=''>Full Stack Todo App</h1>
+                <div className='top-bar'>
+                    <img className='logo' src="/cei.png" alt="cei logo" style={{maxHeight:"5rem", maxWidth: "5rem"}}/>
+                    <h1 className='title'>Full Stack Todo App</h1>
+                </div>
                 {/* Conditional rendering based on login status */}
                 {currentUser ? (
                     <TodoList username={currentUser} onLogout={handleLogout} />

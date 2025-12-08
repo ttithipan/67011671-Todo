@@ -1,9 +1,12 @@
 // frontend/src/components/Login.js
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import '../App.css'
 import React, { useState } from 'react'
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_HOST = import.meta.env.VITE_API_HOST || 'localhost';
+const API_PORT = import.meta.env.VITE_API_PORT || '5001';
+const API_URL = `http://${API_HOST}:${API_PORT}`;
 
 function Login({ onLogin }) {
     const [username, setUsername] = useState('')
@@ -20,7 +23,7 @@ function Login({ onLogin }) {
 
         try {
             // Use Fetch API for POST request
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetch(`${API_URL}/api/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
