@@ -49,86 +49,6 @@ body {
 	position: relative;
 }
 
-p {
-	line-height: 1.6;
-	color: var(--primary-black);
-	margin: 0rem
-}
-
-
-
-/* Base styles for the list item */
-.todo-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  border: 1px solid var(--text-dim);
-  padding: 0.5rem;
-  border-radius: 8px;
-  height: 4rem; /* Default height (Desktop) */
-  text-decoration: none; /* Default state */
-}
-
-/* Logic: if (todo.done) 
-.todo-item.done {
-  text-decoration: line-through;
-}
-No need for strikethrough*/
-
-/* Logic: visualViewport.width < '720' */
-@media (max-width: 719px) {
-  .todo-item {
-    height: 6rem;
-  }
-}
-
-/* 
-Carbon Fiber Background Pattern
-body::before {
-	content: '';
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background:
-		repeating-linear-gradient(0deg,
-			transparent,
-			transparent 2px,
-			rgba(255, 255, 255, 0.03) 2px,
-			rgba(255, 255, 255, 0.03) 4px),
-		repeating-linear-gradient(90deg,
-			transparent,
-			transparent 2px,
-			rgba(255, 255, 255, 0.03) 2px,
-			rgba(255, 255, 255, 0.03) 4px),
-		linear-gradient(135deg,
-			var(--primary-black) 0%,
-			var(--carbon-dark) 25%,
-			var(--carbon-medium) 50%,
-			var(--carbon-dark) 75%,
-			var(--primary-black) 100%);
-	z-index: -2;
-}
-
-body::after {
-	content: '';
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-image:
-		linear-gradient(rgba(255, 51, 51, 0.05) 2px, transparent 2px),
-		linear-gradient(90deg, rgba(255, 51, 51, 0.05) 2px, transparent 2px);
-	background-size: 150px 150px;
-	animation: gridMove 20s linear infinite;
-	z-index: -1;
-	opacity: 0.5;
-}
-*/
-
 .app-container{
   height: 90vh;
   width: 90vw;
@@ -141,12 +61,103 @@ body::after {
   gap: 1rem;
 }
 
+/* --- GLOBAL CONTAINER --- */
+.todo-container {
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* --- FORM --- */
+.todo-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
+}
+.todo-input {
+    flex-grow: 1; /* Input takes up all available space */
+}
+
+/* --- TODO ITEM (MOBILE DEFAULT) --- */
+/* By default, we stack everything vertically for small phone screens */
+.todo-item {
+    display: flex;
+    flex-direction: column; /* Stack items top to bottom */
+    background: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    gap: 15px; /* Space between the text and the controls */
+}
+
+.todo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    overflow-wrap: anywhere; /* Prevents long words from breaking layout */
+}
+
+.task-date {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.todo-controls {
+    display: flex;
+    flex-direction: column; /* Stack DatePicker and Select vertically on mobile */
+    gap: 10px;
+}
+
 .todo-list{
   overflow-y: auto;
   height: 70vh;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+
+
+/* --- DESKTOP STYLES (Min-width: 768px) --- */
+/* When screen is wider than 768px (Tablets/Desktops), switch to row layout */
+@media (min-width: 768px) {
+    .todo-item {
+        flex-direction: row; /* Align side-by-side */
+        align-items: center; /* Vertically center items */
+        justify-content: space-between;
+    }
+
+    .todo-text {
+        width: 50%; /* Task takes up half the space */
+    }
+
+    .todo-controls {
+        flex-direction: row; /* Align DatePicker and Select side-by-side */
+        align-items: center;
+        width: 45%;
+        justify-content: flex-end;
+    }
+
+    .date-picker {
+        width: 180px; /* Fixed width for cleaner look on desktop */
+    }
+
+    .status-select {
+        width: 120px;
+    }
+}
+
+
 
 .danger-btn{
   padding: 0.5rem 1rem;

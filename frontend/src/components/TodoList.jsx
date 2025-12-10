@@ -133,117 +133,75 @@ function TodoList({ username, onLogout }) {
         onLogout()
     }
 
-    return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+return (
+        <div className="todo-container">
+            <div className="todo-header">
                 <h2>Todo List for: {username}</h2>
                 <Button variant="contained" onClick={handleLogout}>Logout</Button>
             </div>
             
-            <form onSubmit={handleAddTodo} style ={{ display: 'flex', marginBottom: '1rem', height: '3rem', justifyContent: 'space-between'}}>
+            <form onSubmit={handleAddTodo} className="todo-form">
                 <TextField
                     size='small'
                     label="New Task"
                     variant='filled'                    
                     type="text"
                     placeholder="New Task"
+                    className="todo-input"
                     value={newTask}
                     onChange={(e) => setNewTask(e.target.value)}
                 />
-                <Button variant = "contained" color = "success" type="submit">Add Task</Button>
+                <Button variant="contained" color="success" type="submit">Add</Button>
             </form>
 
             <div className="todo-list">
-                <h2>Todo</h2>
-                {[...todos].sort((a, b) => new Date(b.updated) - new Date(a.updated))
-                .filter((todo) => todo.done == '0')
-                .map(todo => (
-                    <li className={`todo-item ${todo.done ? 'done' : ''}`} key={todo.id}>
-                        <p style={{width: '70vw', overflowWrap: 'anywhere'}}>{todo.task}</p> 
-                        <p style={{width: '20vw'}}> Updated: {new Date(todo.updated).toLocaleString()}</p>
-                        <DateTimePicker 
-                            label="Target date.."  // Always shows this at the top
-                            value={todo.target_date ? dayjs(todo.target_date) : null} // Shows date inside the box if it exists
-                            onChange={(newDate) => handleTargetDateChange(todo.id, newDate)}
-                        />
-                        <Select onChange={(e) => handleDoneStatus(todo.id, e.target.value)} value={todo.done}>
-                            <MenuItem value="0">Todo</MenuItem>
-                            <MenuItem value="1">Doing</MenuItem>
-                            <MenuItem value="2">Done</MenuItem>
-                            <MenuItem value="" 
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteTodo(todo.id)
-                                    }}                               
-                                sx={{ color: "red" }}>
-                                Delete
-                            </MenuItem>
-                            <MenuItem value="4">
+                {/* Helper function to render list to avoid repeating code 3 times */}
+                {['0', '1', '2'].map(statusId => {
+                    const statusTitle = statusId === '0' ? 'Todo' : statusId === '1' ? 'Doing' : 'Done';
+                    return (
+                        <div key={statusId} className="status-section">
+                            <h3>{statusTitle}</h3>
+                            {[...todos]
+                                .sort((a, b) => new Date(b.updated) - new Date(a.updated))
+                                .filter((todo) => todo.done == statusId)
+                                .map(todo => (
+                                    <li className={`todo-item ${todo.done === '2' ? 'done' : ''}`} key={todo.id}>
+                                        
+                                        {/* 1. Task Description */}
+                                        <div className="todo-text">
+                                            <span className="task-name">{todo.task}</span>
+                                            <span className="task-date">Updated: {new Date(todo.updated).toLocaleString()}</span>
+                                        </div>
 
-                            </MenuItem>
-                        </Select>
-                    </li>
-                ))}
-                <h2>Doing</h2>
-                {[...todos].sort((a, b) => new Date(b.updated) - new Date(a.updated))
-                .filter((todo) => todo.done == '1')
-                .map(todo => (
-                    <li className={`todo-item ${todo.done ? 'done' : ''}`} key={todo.id}>
-                        <p style={{width: '70vw', overflowWrap: 'anywhere'}}>{todo.task}</p> 
-                        <p style={{width: '20vw'}}> Updated: {new Date(todo.updated).toLocaleString()}</p>
-                        <DateTimePicker 
-                            label="Target date.."  // Always shows this at the top
-                            value={todo.target_date ? dayjs(todo.target_date) : null} // Shows date inside the box if it exists
-                            onChange={(newDate) => handleTargetDateChange(todo.id, newDate)}
-                        />
-                        <Select onChange={(e) => handleDoneStatus(todo.id, e.target.value)} value={todo.done}>
-                            <MenuItem value="0">Todo</MenuItem>
-                            <MenuItem value="1">Doing</MenuItem>
-                            <MenuItem value="2">Done</MenuItem>
-                            <MenuItem value="" 
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteTodo(todo.id)
-                                    }}                               
-                                sx={{ color: "red" }}>
-                                Delete
-                            </MenuItem>
-                            <MenuItem value="4">
-
-                            </MenuItem>
-                        </Select>
-                    </li>
-                ))}
-                <h2>Done</h2>
-                {[...todos].sort((a, b) => new Date(b.updated) - new Date(a.updated))
-                .filter((todo) => todo.done == '2')
-                .map(todo => (
-                    <li className={`todo-item ${todo.done ? 'done' : ''}`} key={todo.id}>
-                        <p style={{width: '70vw', overflowWrap: 'anywhere'}}>{todo.task}</p> 
-                        <p style={{width: '20vw'}}> Updated: {new Date(todo.updated).toLocaleString()}</p>
-                        <DateTimePicker 
-                            label="Target date.."  // Always shows this at the top
-                            value={todo.target_date ? dayjs(todo.target_date) : null} // Shows date inside the box if it exists
-                            onChange={(newDate) => handleTargetDateChange(todo.id, newDate)}
-                        />
-                        <Select onChange={(e) => handleDoneStatus(todo.id, e.target.value)} value={todo.done}>
-                            <MenuItem value="0">Todo</MenuItem>
-                            <MenuItem value="1">Doing</MenuItem>
-                            <MenuItem value="2">Done</MenuItem>
-                            <MenuItem value="" 
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteTodo(todo.id)
-                                    }}                               
-                                sx={{ color: "red" }}>
-                                Delete
-                            </MenuItem>
-                            <MenuItem value="4">
-
-                            </MenuItem>
-                        </Select>
-                    </li>
-                ))}
+                                        {/* 2. Controls (Date + Select) */}
+                                        <div className="todo-controls">
+                                            <DateTimePicker 
+                                                label="Target date" 
+                                                className="date-picker"
+                                                slotProps={{ textField: { size: 'small' } }} 
+                                                value={todo.target_date ? dayjs(todo.target_date) : null}
+                                                onChange={(newDate) => handleTargetDateChange(todo.id, newDate)}
+                                            />
+                                            <Select 
+                                                className="status-select"
+                                                size="small"
+                                                onChange={(e) => handleDoneStatus(todo.id, e.target.value)} 
+                                                value={todo.done}
+                                            >
+                                                <MenuItem value="0">Todo</MenuItem>
+                                                <MenuItem value="1">Doing</MenuItem>
+                                                <MenuItem value="2">Done</MenuItem>
+                                                <MenuItem value="" onClick={(e) => { e.stopPropagation(); handleDeleteTodo(todo.id) }} sx={{ color: "red" }}>
+                                                    Delete
+                                                </MenuItem>
+                                            </Select>
+                                        </div>
+                                    </li>
+                                ))
+                            }
+                        </div>
+                    )
+                })}
             </div>
         </div>
     )
