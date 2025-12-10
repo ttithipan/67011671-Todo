@@ -6,6 +6,7 @@ cd frontend
 npm install
 cd ../backend
 npm install
+docker compose -f db-compose-dev.yml -up
 ```
 
 In ```/backend```, make a ```.env``` file with the following varables.
@@ -31,3 +32,12 @@ Fill in all variables with your desired value.
 Then copy code from ```/setup/init.sql``` then run it in database manager.
 http://localhost:{PMA_HOST_PORT}/index.php?route=/table/sql&db={MYSQL_DATABASE}&table=todo
 
+## Continue development
+
+```
+cd backend
+docker compose -f db-compose-dev.yml -up #In case your docker is not running.
+node server.js
+cd ../frontend
+npm run dev
+```
