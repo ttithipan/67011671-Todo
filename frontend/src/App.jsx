@@ -33,7 +33,7 @@ function App() {
     };
 
     return (
-        <div className="body">
+        <div >
             <div className='app-container'>
                 <div className='top-bar'>
                     <img className='logo' src="/cei.png" alt="cei logo" style={{maxHeight:"5rem", maxWidth: "5rem"}}/>

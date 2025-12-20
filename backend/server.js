@@ -14,8 +14,6 @@ app.use(express.json()); // Enable reading JSON data from request body
 
 // --- MySQL Connection Setup ---
 const db = mysql.createConnection({
-    // IMPORTANT: Inside Docker, host is the service name ('mysql_db'). 
-    // Locally, it is 'localhost'. We use a variable to switch easily.
     host: process.env.DB_HOST || 'localhost', 
     user: process.env.MYSQL_USER,      
     password: process.env.MYSQL_PASSWORD, 

@@ -6,7 +6,8 @@ cd frontend
 npm install
 cd ../backend
 npm install
-docker compose -f db-compose-dev.yml -up
+docker compose -f db-compose-dev.yml --env-file "../backend/.env" up -d
+npm run setup
 ```
 
 In ```/backend```, make a ```.env``` file with the following varables.
@@ -29,15 +30,12 @@ VITE_API_PORT=          #Fill in port number from API_PORT.
 ```
 Fill in all variables with your desired value.
 
-Then copy code from ```/setup/init.sql``` then run it in database manager.
-http://localhost:{PMA_HOST_PORT}/index.php?route=/table/sql&db={MYSQL_DATABASE}&table=todo
-
 ## Continue development
+Start Your database docker then run the following command
 
-```
-cd backend
-docker compose -f db-compose-dev.yml -up #In case your docker is not running.
-node server.js
+```bash
+cd ./backend
+npm run start
 cd ../frontend
 npm run dev
 ```
