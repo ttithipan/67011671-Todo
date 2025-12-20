@@ -155,7 +155,6 @@ return (
             </form>
 
             <div className="todo-list">
-                {/* Helper function to render list to avoid repeating code 3 times */}
                 {['0', '1', '2'].map(statusId => {
                     const statusTitle = statusId === '0' ? 'Todo' : statusId === '1' ? 'Doing' : 'Done';
                     return (
