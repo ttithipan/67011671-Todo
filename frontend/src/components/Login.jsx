@@ -1,74 +1,137 @@
-// frontend/src/components/Login.js
+import React, { useState, useRef } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import '../App.css'
-import React, { useState } from 'react'
+import Divider from '@mui/material/Divider';
+import ReCAPTCHA from "react-google-recaptcha";
+import '../App.css';
 
+// Construct API URL
 const API_HOST = import.meta.env.VITE_API_HOST || 'localhost';
-const API_PORT = import.meta.env.VITE_API_PORT || '5001';
+const API_PORT = import.meta.env.VITE_API_PORT || '3001';
 const API_URL = `http://${API_HOST}:${API_PORT}`;
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 function Login({ onLogin }) {
-    const [username, setUsername] = useState('')
-    const [error, setError] = useState('')
+    // 1. State for new fields
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [error, setError] = useState('');
+    
+    // Ref to reset captcha if login fails
+    const captchaRef = useRef(null);
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError('')
+        e.preventDefault();
+        setError('');
 
-        if (!username.trim()) {
-            setError('Please enter a username.')
-            return
+        // 2. Validation
+        if (!email || !password) {
+            setError('Please fill in all fields.');
+            return;
+        }
+        if (!captchaToken) {
+            setError('Please complete the CAPTCHA.');
+            return;
         }
 
         try {
-            // Use Fetch API for POST request
-            const response = await fetch(`${API_URL}/api/login`, {
+            // 3. Send Login Request
+            const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username }), // Convert object to JSON string
-            })
+                // IMPORTANT: Send cookie/session data
+                credentials: 'include', 
+                body: JSON.stringify({ 
+                    email, 
+                    password, 
+                    captchaToken 
+                }),
+            });
 
-            // Check if the response status is OK (200-299)
+            const data = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json()
-                setError(errorData.message || 'Login failed due to server error.')
-                return
+                // Reset captcha on failure so user can try again
+                captchaRef.current.reset();
+                setCaptchaToken(null);
+                setError(data.message || 'Login failed.');
+                return;
             }
-
-            const data = await response.json() // Parse the response body as JSON
 
             if (data.success) {
-                localStorage.setItem('todo_username', username)
-                onLogin(username) // Update App component state
-            } else {
-                setError(data.message || 'Login failed.')
+                // 4. Success: Pass full user object to parent
+                // Note: We do NOT use localStorage for auth anymore (Cookies handle it)
+                onLogin(data.user); 
             }
         } catch (err) {
-            // Handle network connection errors
-            setError('Network error: Could not connect to the server.')
-            console.error(err)
+            setError('Network error: Could not connect to the server.');
+            console.error(err);
         }
-    }
+    };
+
+    // 5. Handle Google Redirect
+    const handleGoogleLogin = () => {
+        // Simple redirect to backend endpoint
+        window.location.href = `${API_URL}/api/auth/google`;
+    };
 
     return (
-        <div>
-            <h2>Login (Username Only)</h2>
-            <form onSubmit={handleSubmit} style={{display: "flex", gap: "1rem"}}>
+        <div style={{ maxWidth: '400px', margin: '2rem auto', textAlign: 'center' }}>
+            <h2>Login</h2>
+            
+            {/* --- LOCAL LOGIN FORM --- */}
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <TextField
-                    size='small'
-                    type="text"
-                    placeholder="Enter your username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    label="Email"
+                    variant="outlined"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                 />
-                <Button variant= 'contained' type="submit">Login</Button>
+                <TextField
+                    label="Password"
+                    variant="outlined"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+
+                {/* Captcha Widget */}
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <ReCAPTCHA
+                        ref={captchaRef}
+                        sitekey={RECAPTCHA_SITE_KEY}
+                        onChange={(token) => setCaptchaToken(token)}
+                    />
+                </div>
+
+                <Button variant="contained" color="primary" type="submit" size="large">
+                    Login with Email
+                </Button>
             </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+
+            {/* --- DIVIDER --- */}
+            <Divider style={{ margin: '2rem 0' }}>OR</Divider>
+
+            {/* --- GOOGLE LOGIN --- */}
+            <Button 
+                variant="outlined" 
+                color="secondary" 
+                fullWidth 
+                onClick={handleGoogleLogin}
+                style={{ textTransform: 'none' }}
+            >
+                Continue with Google
+            </Button>
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;

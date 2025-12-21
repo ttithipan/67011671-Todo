@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const db = require('./config/dbconfig');
+const db = require('./config/db');
 
 async function setup() {
     try {
