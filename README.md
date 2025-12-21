@@ -36,10 +36,10 @@ RECAPTCHA_SECRET_KEY=   # reCAPTCHA Secret Key (v2 Checkbox) from Google Admin
 
 In  ```/frontend```, make a ```.env``` file with the following variables.
 ```
-VITE_API_HOST=          #Fill in hostname from API_HOST.
-VITE_API_PORT=          #Fill in port number from API_PORT.
-PORT=                   #Fill in port number for VITE.
-VITE_RECAPTCHA_SITE_KEY #Fill in site key from recaptcha.
+VITE_API_HOST=              #Fill in hostname from API_HOST.
+VITE_API_PORT=              #Fill in port number from API_PORT.
+PORT=                       #Fill in port number for VITE.
+VITE_RECAPTCHA_SITE_KEY=    #Fill in site key from recaptcha.
 ```
 Fill in all variables with your desired value.
 
