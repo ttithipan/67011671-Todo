@@ -2,35 +2,51 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+07:00";
 
-
-CREATE TABLE `users` (
+-- 1. TEAMS (No changes)
+CREATE TABLE `teams` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `username` varchar(50) DEFAULT NULL,    -- Nullable if Google user hasn't set one
-  `email` varchar(100) NOT NULL UNIQUE,   -- CRITICAL for linking Google to Local accounts
-  `full_name` varchar(100) NOT NULL,      -- Synced from Google or provided by user
-  `profile_image` varchar(255) DEFAULT NULL,
-  `password_hash` varchar(255) DEFAULT NULL, -- Null for Google-only users
-  `salt` varchar(64) DEFAULT NULL,           -- Null for Google-only users
-  `google_id` varchar(255) DEFAULT NULL,     -- The unique ID from Google
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  
-  -- Ensure username and google_id are unique if they exist
-  UNIQUE KEY `unique_username` (`username`),
-  UNIQUE KEY `unique_google` (`google_id`)
+  `name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 2. USERS (No changes)
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `team_id` int DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `email` varchar(100) NOT NULL UNIQUE,
+  `full_name` varchar(100) NOT NULL,
+  `profile_image` varchar(255) DEFAULT NULL,
+  `password_hash` varchar(255) DEFAULT NULL,
+  `salt` varchar(64) DEFAULT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `unique_username` (`username`),
+  UNIQUE KEY `unique_google` (`google_id`),
+  CONSTRAINT `fk_users_team`
+    FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 3. TODO (Updated)
 CREATE TABLE `todo` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` int NOT NULL,                 -- CHANGED: References users.id
+  `user_id` int DEFAULT NULL,                 -- CHANGED: Now Nullable (Task can be unassigned)
+  `team_id` int DEFAULT NULL,                 -- NEW: Direct link to Team
   `task` varchar(50) NOT NULL,
   `done` tinyint(1) NOT NULL DEFAULT '0',
   `updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `target_date` datetime DEFAULT NULL,
   
-  -- Foreign Key Constraint
+  -- Link to User (Optional now)
   CONSTRAINT `fk_todo_user` 
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) 
-    ON DELETE CASCADE                     -- If user is deleted, delete their tasks
+    ON DELETE SET NULL,                       -- If user deleted, task goes back to "unassigned"
+    
+  -- Link to Team (New)
+  CONSTRAINT `fk_todo_team`
+    FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`)
+    ON DELETE CASCADE                         -- If Team deleted, delete their tasks
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 COMMIT;
