@@ -1,9 +1,8 @@
 const db = require('../config/db');
 
 exports.getTodos = async (req, res) => {
-    // We get the ID from the logged-in session, not the URL
     const userId = req.user.id; 
-    const sql = 'SELECT id, task, done, updated, target_date FROM todo WHERE user_id = ? ORDER BY id DESC';
+    const sql = 'SELECT id, team_id, task, done, updated, target_date FROM todo WHERE user_id = ? ORDER BY id DESC';
     
     try {
         const [rows] = await db.query(sql, [userId]);
@@ -15,17 +14,17 @@ exports.getTodos = async (req, res) => {
 
 exports.createTodo = async (req, res) => {
     const userId = req.user.id;
-    const { task } = req.body;
+    const { task, teamId } = req.body;
 
     if (!task) return res.status(400).send({ message: 'Task is required' });
-    
-    const sql = 'INSERT INTO todo (user_id, task) VALUES (?, ?)';
+    const sql = 'INSERT INTO todo (user_id, team_id, task) VALUES (?, ?, ?)';
     
     try {
-        const [result] = await db.query(sql, [userId, task]);
+        const [result] = await db.query(sql, [userId, teamId, task]);
         res.status(201).send({ 
             id: result.insertId, 
-            task, 
+            task,
+            teamId,
             done: 0, 
             updated: new Date() 
         });

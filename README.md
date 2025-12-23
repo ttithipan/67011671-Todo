@@ -6,8 +6,6 @@ cd frontend
 npm install
 cd ../backend
 npm install
-docker compose -f db-compose-dev.yml --env-file "../backend/.env" up -d
-npm run setup
 ```
 
 In ```/backend```, make a ```.env``` file with the following varables.
@@ -42,6 +40,12 @@ PORT=                       #Fill in port number for VITE.
 VITE_RECAPTCHA_SITE_KEY=    #Fill in site key from recaptcha.
 ```
 Fill in all variables with your desired value.
+
+Then run
+```bash
+docker compose -f db-compose-dev.yml --env-file "../backend/.env" up -d
+npm run setup
+```
 
 ## Continue development
 Start Your database docker then run the following command

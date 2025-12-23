@@ -79,7 +79,6 @@ return (
                 </div>
 
                 {currentUser ? (
-                    /* The snippet you requested */
                     <TodoList 
                         username={currentUser.username} 
                         email={currentUser.email} 
@@ -87,9 +86,7 @@ return (
                         onLogout={handleLogout} 
                     />
                 ) : (
-                    /* ... Login/Register view ... */
                     <div className="auth-container">
-                        {/* ... (Same as before) ... */}
                         {view === 'login' ? (
                             <>
                                 <Login onLogin={handleLogin} />

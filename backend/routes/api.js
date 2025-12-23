@@ -4,12 +4,10 @@ const passport = require('passport');
 const todoController = require('../controllers/todoController');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
-
+const teamController = require('../controllers/teamController');
+const protectedRoute = require('../middleware/auth');
 // Middleware to check if user is logged in
-const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
-    res.status(401).json({ message: 'Please log in' });
-};
+
 
 
 router.post('/auth/register', authController.register);
@@ -32,14 +30,19 @@ router.get('/auth/logout', (req, res) => {
     });
 });
 
-router.get('/auth/me', isAuthenticated, (req, res) => {
+router.get('/auth/me', protectedRoute, (req, res) => {
     res.json(req.user);
 });
 
 // --- TODO ROUTES (Protected) ---
-router.get('/todos', isAuthenticated, todoController.getTodos);
-router.post('/todos', isAuthenticated, todoController.createTodo);
-router.put('/todos/:id', isAuthenticated, todoController.updateTodo);
-router.delete('/todos/:id', isAuthenticated, todoController.deleteTodo);
+router.get('/todos', protectedRoute, todoController.getTodos);
+router.post('/todos', protectedRoute, todoController.createTodo);
+router.put('/todos/:id', protectedRoute, todoController.updateTodo);
+router.delete('/todos/:id', protectedRoute, todoController.deleteTodo);
+
+// --- Team ROUTES (Protected) ---
+router.post('/teams', protectedRoute, teamController.createTeam);
+router.post('/teams/name', protectedRoute, teamController.getTeamNames);
+router.post('/teams/listmemberships', protectedRoute, teamController.listMembership);
 
 module.exports = router;
