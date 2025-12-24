@@ -43,7 +43,7 @@ Fill in all variables with your desired value.
 
 Then run
 ```bash
-docker compose -f db-compose-dev.yml --env-file "../backend/.env" up -d
+docker compose -f db.yml --env-file "../backend/.env" up -d
 npm run setup
 ```
 

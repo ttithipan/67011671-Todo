@@ -1,7 +1,7 @@
 const db = require('../config/db');
 const axios = require('axios');
 const passport = require('passport');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 
 async function verifyCaptcha(token) {
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
@@ -45,6 +45,9 @@ const googleCallback = async (accessToken, refreshToken, profile, done) => {
             [googleId, email, fullName, email] 
         );
 
+        const [defaultTeam] = await db.execute(
+            'INSERT INTO team_members (user_id, team_id) VALUES (?, 1)',
+            [result.insertId])
         const newUser = { id: result.insertId, email: email, full_name: fullName };
         return done(null, newUser);
 

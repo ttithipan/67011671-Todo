@@ -11,9 +11,6 @@ async function setup() {
         // 2. Run the query
         console.log('Running setup...');
         await db.query(sql);
-        await db.query(sqlTrigger1);
-        await db.query(sqlTrigger2);
-        await db.query(sqlTrigger3);
         
         console.log('Database setup complete!');
         

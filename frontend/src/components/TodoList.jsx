@@ -114,10 +114,7 @@ function TodoList({ username, email, userId, onLogout }) {
     setNewTask('');
   };
 
-  const allSections = [
-    { id: null, name: 'Personal Todos' },
-    ...teams
-  ];
+  const allSections = [...teams];
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -146,7 +143,6 @@ function TodoList({ username, email, userId, onLogout }) {
             onChange={(e) => setSelectedTeam(e.target.value)}
             style={{ minWidth: '150px' }}
           >
-            <MenuItem value="Personal">Personal</MenuItem>
             {teams.map(team => (
               <MenuItem key={team.id} value={team.id}>{team.name}</MenuItem>
             ))}
@@ -157,7 +153,7 @@ function TodoList({ username, email, userId, onLogout }) {
         <div className="all-teams-container">
           {allSections.map(section => (
             <TeamRow 
-              key={section.id || 'personal'}
+              key={section.id}
               teamName={section.name}
               teamId={section.id}
               todos={todos}

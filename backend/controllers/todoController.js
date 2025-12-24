@@ -1,13 +1,26 @@
 const db = require('../config/db');
-
+const teamController = require('../controllers/teamController');
 exports.getTodos = async (req, res) => {
-    const userId = req.user.id; 
-    const sql = 'SELECT id, team_id, task, done, updated, target_date FROM todo WHERE user_id = ? ORDER BY id DESC';
+    const userId = req.user.id;
+    const teamIds = req.body.teamIds;
+    const otherTeamIds = teamIds.filter(id => id != 1);
+    const sqlPersonalTask = 'SELECT id, team_id, task, done, updated, target_date FROM todo WHERE user_id = ? AND team_id = 1 ORDER BY id DESC';
+    let sqlTeamTask = null;
     
+    if (otherTeamIds.length > 0) {
+        const placeholder = otherTeamIds.map(() => '?').join(',');
+        sqlTeamTask = `SELECT id, team_id, task, done, updated, target_date FROM todo WHERE user_id = ? AND team_id IN (${placeholder}) ORDER BY id DESC`;
+    }
     try {
-        const [rows] = await db.query(sql, [userId]);
-        res.json(rows);
+        const [teamTask] = await db.query(sqlTeamTask, [userId, ...otherTeamIds]); 
+        const [personalTask] = await db.query(sqlPersonalTask, [userId]);
+        const allTasks = [...teamTask, ...personalTask];
+        res.status(200).send({
+            message: "Todo fetched successfully",
+            data: allTasks 
+        });
     } catch (err) {
+        console.error(err); // Good practice to log the error on the server
         res.status(500).send(err.message);
     }
 };

@@ -35,7 +35,7 @@ router.get('/auth/me', protectedRoute, (req, res) => {
 });
 
 // --- TODO ROUTES (Protected) ---
-router.get('/todos', protectedRoute, todoController.getTodos);
+router.post('/todos/list', protectedRoute, todoController.getTodos);
 router.post('/todos', protectedRoute, todoController.createTodo);
 router.put('/todos/:id', protectedRoute, todoController.updateTodo);
 router.delete('/todos/:id', protectedRoute, todoController.deleteTodo);
@@ -43,6 +43,6 @@ router.delete('/todos/:id', protectedRoute, todoController.deleteTodo);
 // --- Team ROUTES (Protected) ---
 router.post('/teams', protectedRoute, teamController.createTeam);
 router.post('/teams/name', protectedRoute, teamController.getTeamNames);
-router.post('/teams/listmemberships', protectedRoute, teamController.listMembership);
+router.post('/teams/listmemberships', protectedRoute, teamController.listMemberships);
 
 module.exports = router;

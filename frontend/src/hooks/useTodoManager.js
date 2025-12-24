@@ -14,9 +14,10 @@ export const useTodoManager = (onLogout, username) => {
       const res = await fetch(`${API_URL}/api/${endpoint}`, { 
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        ...options 
+        method: options.method,
+        body: JSON.stringify(options.body),
       });
-
+      
       if (res.status === 401) {
         if (onLogout) onLogout();
         return null;
@@ -32,28 +33,47 @@ export const useTodoManager = (onLogout, username) => {
     }
   };
 
-  // Initial Data Fetching
   useEffect(() => {
     const initData = async () => {
-      // 1. Get Todos
-      const todoData = await apiCall('todos');
-      if (todoData) setTodos(todoData);
+      try {
+        // Fetch team memberships
+        const memberships = await apiCall('teams/listmemberships', { method: 'POST' });
+        
+        if (!memberships || memberships.length === 0) {
+          setTodos([]);
+          return;
+        }
 
-      // 2. Get Memberships -> Then Get Team Names
-      const memberships = await apiCall('teams/listmemberships', { method: 'POST' });
-      
-      if (memberships && memberships.length > 0) {
+        // Extract team IDs from memberships
         const teamIds = memberships.map(m => m.team_id);
+
+        // Fetch team names using the extracted team IDs
         const teamNames = await apiCall('teams/name', { 
           method: 'POST', 
-          body: JSON.stringify({ teamIds }) 
+          body: {teamIds: teamIds} 
         });
-        if (teamNames) setTeams(teamNames);
+
+        if (teamNames) {
+          setTeams(teamNames);
+        }
+
+        // Fetch todos based on the memberships
+        const todoData = await apiCall('todos/list', {
+          method: 'POST',
+          body: {teamIds: teamIds}
+        });
+
+        if (todoData && todoData.data) {
+          setTodos(todoData.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
     initData();
   }, [onLogout]);
+
 
   // --- Actions ---
 
@@ -65,7 +85,10 @@ export const useTodoManager = (onLogout, username) => {
 
     const newTodo = await apiCall('todos', {
       method: 'POST',
-      body: JSON.stringify({ task, teamId: payloadTeamId })
+      body: {
+        task: task,
+        teamId: teamId
+      }
     });
 
     if (newTodo) setTodos(prev => [newTodo, ...prev]);
@@ -74,7 +97,7 @@ export const useTodoManager = (onLogout, username) => {
   const updateTodo = async (id, updates) => {
     const res = await apiCall(`todos/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(updates)
+      body: updates
     });
 
     if (res) {
@@ -94,14 +117,11 @@ export const useTodoManager = (onLogout, username) => {
   const createTeam = async () => {
     const res = await apiCall('teams', {
       method: 'POST',
-      body: JSON.stringify({ name: `Team of ${username}` })
+      body: { name: `Team of ${username}` }
     });
     
     if (res) {
       alert('Team created!');
-      // Optimistically add the new team or refetch could go here
-      // For now, we assume the user might refresh or we add it to state:
-      // setTeams(prev => [...prev, res]); 
     }
   };
 

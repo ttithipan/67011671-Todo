@@ -2,7 +2,8 @@ const db = require('../config/db');
 
 exports.createTeam = async (req, res) => {
     const userId = req.user.id;
-    const { name } = req.body; 
+    const { name } = req.body;
+    console.log(name); 
     try {
         const [result] = await db.query(
             'INSERT INTO teams (name) VALUES (?)',
@@ -19,7 +20,7 @@ exports.createTeam = async (req, res) => {
     };
 };
 
-exports.listMembership = async (req, res) => {
+exports.listMemberships = async (req, res) => {
     const userId = req.user.id;
     try {
         const [result] = await db.query('SELECT team_id, role FROM team_members WHERE user_id = ?', [userId]);
@@ -33,7 +34,7 @@ exports.listMembership = async (req, res) => {
 };
 
 exports.getTeamNames = async (req, res) => {
-    const { teamIds } = req.body; 
+    const { teamIds } = req.body;
 
     if (!teamIds || teamIds.length === 0) {
         return res.json([]); 

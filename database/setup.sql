@@ -69,4 +69,6 @@ CREATE TABLE `todo` (
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO teams (name) VALUES ('Personal');
+
 COMMIT;
