@@ -11,7 +11,10 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-app.use(cors({ origin: `http://localhost:${process.env.FRONTEND_PORT}`, credentials: true })); // Important for Sessions
+app.use(cors(
+    {origin: `http://localhost:${process.env.FRONTEND_PORT}`, credentials: true },
+    {origin: `http://localhost:${process.env.DB_PORT}`, credentials: true}
+));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
