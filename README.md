@@ -6,7 +6,6 @@ cd frontend
 npm install
 cd ../backend
 npm install
-docker compose -f db-compose-dev.yml --env-file "../backend/.env" up -d
 npm run setup
 ```
 
@@ -47,7 +46,9 @@ Fill in all variables with your desired value.
 Start Your database docker then run the following command
 
 ```bash
-cd ./backend
+cd database
+docker compose -f db-compose-dev.yml --env-file "../backend/.env" up -d
+cd ../backend
 npm run dev
 cd ../frontend
 npm run dev
