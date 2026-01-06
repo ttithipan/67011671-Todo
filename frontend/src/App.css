@@ -84,6 +84,12 @@ body {
     flex-grow: 1; /* Input takes up all available space */
 }
 
+.profile-container{
+	margin-left: auto;
+	margin-right: 15px;
+	display: inline;
+}
+
 /* --- TODO ITEM (MOBILE DEFAULT) --- */
 /* By default, we stack everything vertically for small phone screens */
 .todo-item {

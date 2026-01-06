@@ -16,7 +16,7 @@ app.use(cors(
     {origin: `http://localhost:${process.env.DB_PORT}`, credentials: true}
 ));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '1mb'}));
 
 // Session Setup
 app.use(session({
