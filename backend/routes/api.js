@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+
+const assembleMultipartFormData = require('multer')();
+
 const todoController = require('../controllers/todoController');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
@@ -10,7 +13,6 @@ const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) return next();
     res.status(401).json({ message: 'Please log in' });
 };
-
 
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.loginLocal)
@@ -41,5 +43,13 @@ router.get('/todos', isAuthenticated, todoController.getTodos);
 router.post('/todos', isAuthenticated, todoController.createTodo);
 router.put('/todos/:id', isAuthenticated, todoController.updateTodo);
 router.delete('/todos/:id', isAuthenticated, todoController.deleteTodo);
+
+router.get("/pfp/:id", userController.getProfilePicture);
+const profilePictureNameInFormData = 'image';
+router.put("/pfp/:id", assembleMultipartFormData.single(profilePictureNameInFormData), userController.putProfilePicture);
+
+// Init Passport
+router.use(passport.initialize());
+router.use(passport.session());
 
 module.exports = router;

@@ -42,6 +42,8 @@ VITE_RECAPTCHA_SITE_KEY=    #Fill in site key from recaptcha.
 ```
 Fill in all variables with your desired value.
 
+Add `./storage/pfp/default.jpg`. This is the default/backup profile picture and the backend will explode if you don't have it.
+
 ## Continue development
 Start Your database docker then run the following command
 
