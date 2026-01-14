@@ -32,7 +32,7 @@ exports.updateProfile = async (req, res) => {
 	returns HTTP status 500 if fs.readFileSync raises an exception
 */
 exports.getProfilePicture = async (request, response) => {
-	const defaultProfilePictureRelativePath = '../storage/pfp/default.jpg';
+	const defaultProfilePictureRelativePath = '../frontend/public/pfp.jpg';
 	
 	const id = request.params.id;
 	const query = await db.query('SELECT profile_image FROM users WHERE id = ?', [id]);
