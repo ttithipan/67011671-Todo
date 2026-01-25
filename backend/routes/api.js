@@ -7,6 +7,7 @@ const assembleMultipartFormData = require('multer')();
 const todoController = require('../controllers/todoController');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
+const teamController = require('../controllers/teamController')
 
 // Middleware to check if user is logged in
 const isAuthenticated = (req, res, next) => {
@@ -38,11 +39,22 @@ router.get('/auth/me', isAuthenticated, (req, res) => {
     res.json(req.user);
 });
 
+// --- User ---
+router.get('/users/list', isAuthenticated, userController.listUsers);
 // --- TODO ROUTES (Protected) ---
-router.get('/todos', isAuthenticated, todoController.getTodos);
+router.post('/todos/list', isAuthenticated, todoController.getTodos);
 router.post('/todos', isAuthenticated, todoController.createTodo);
 router.put('/todos/:id', isAuthenticated, todoController.updateTodo);
 router.delete('/todos/:id', isAuthenticated, todoController.deleteTodo);
+
+// --- Team ROUTES (Protected) ---
+router.post('/teams', isAuthenticated, teamController.createTeam);
+router.post('/teams/name', isAuthenticated, teamController.getTeamnames);
+router.post('/teams/listmemberships', isAuthenticated, teamController.listMemberships);
+router.post('/teams/listteammember', isAuthenticated, teamController.listTeamMembers);
+router.post('/teams/rename', isAuthenticated, teamController.updateTeamname);
+router.post('/teams/add_member', isAuthenticated, teamController.addMember);
+router.post('/teams/del_member', isAuthenticated, teamController.deleteMember);
 
 router.get("/pfp/:id", userController.getProfilePicture);
 const profilePictureNameInFormData = 'image';

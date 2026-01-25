@@ -1,7 +1,7 @@
 const db = require('../config/db');
 const axios = require('axios');
 const passport = require('passport');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 
 async function verifyCaptcha(token) {
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
@@ -45,6 +45,9 @@ const googleCallback = async (accessToken, refreshToken, profile, done) => {
             [googleId, email, fullName, email] 
         );
 
+        const [defaultTeam] = await db.execute(
+            'INSERT INTO team_members (user_id, team_id) VALUES (?, 1)',
+            [result.insertId])
         const newUser = { id: result.insertId, email: email, full_name: fullName };
         return done(null, newUser);
 
@@ -104,22 +107,20 @@ const register = async (req, res) => {
             VALUES (?, ?, ?, ?, NULL)
         `;
 
-        const [result] = await db.query(insertSql, [
-            email,
-            fullName, 
-            hash, 
-            salt,
-        ]);
+        const [result] = await db.execute(
+            'INSERT INTO users (email, full_name, password_hash, salt, username) VALUES (?, ?, ?, ?, NULL)',
+            [email, fullName, hash, salt] 
+        );
 
-        res.status(201).json({ 
-            success: true, 
-            message: 'User registered successfully',
-            userId: result.insertId
-        });
+        const [defaultTeam] = await db.execute(
+            'INSERT INTO team_members (user_id, team_id) VALUES (?, 1)',
+            [result.insertId])
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error during registration' });
+        const newUser = { id: result.insertId, email: email, full_name: fullName };
+        return done(null, newUser);
+
+    } catch (error) {
+        return done(error, null);
     }
 };
 

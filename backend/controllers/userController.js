@@ -1,6 +1,20 @@
 const db = require('../config/db');
 const fs = require('node:fs');
 
+
+exports.listUsers = async (req, res) => {
+  try {
+    const users = await db.query("SELECT id, username FROM users");
+
+    // 3. Return the list
+    res.status(200).json(users);
+
+  } catch (error) {
+    console.error("Error listing users:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 exports.updateProfile = async (req, res) => {
     const userId = req.user.id; // From Session
     const { newUsername } = req.body;
