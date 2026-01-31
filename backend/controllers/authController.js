@@ -117,18 +117,10 @@ const register = async (req, res) => {
             [result.insertId])
 
         const newUser = { id: result.insertId, email: email, full_name: fullName };
-        // return done(null, newUser);
-        return res.status(201).json({
-            success: true,
-            message: "Registration successful",
-            user: newUser,
-        });
+        return done(null, newUser);
 
     } catch (error) {
-        // return done(error, null);
-        return res.status(500).json({
-        message: error.message || "Internal server error",
-        });
+        return done(error, null);
     }
 };
 

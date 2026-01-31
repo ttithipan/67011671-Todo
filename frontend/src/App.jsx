@@ -150,7 +150,8 @@ function App() {
 								<TodoList 
 										username={currentUser.username} 
 										email={currentUser.email} 
-										userId={currentUser.id} 
+										userId={currentUser.id}
+										full_name={currentUser.full_name}
 										onLogout={handleLogout} 
 								/>
 						) : (

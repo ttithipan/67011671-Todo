@@ -4,7 +4,7 @@ const fs = require('node:fs');
 
 exports.listUsers = async (req, res) => {
   try {
-    const users = await db.query("SELECT id, username FROM users");
+    const users = await db.query("SELECT id, username, email, full_name FROM users");
 
     // 3. Return the list
     res.status(200).json(users);
