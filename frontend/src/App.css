@@ -67,6 +67,11 @@ body {
     padding: 1rem;
 }
 
+.all-teams-container{
+	overflow-y: auto;
+	max-height: 60vh;
+}
+
 .todo-header {
     display: flex;
     justify-content: space-between;
