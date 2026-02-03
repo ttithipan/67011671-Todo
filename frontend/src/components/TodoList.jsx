@@ -50,14 +50,14 @@ const TodoItem = ({ todo, onUpdate, onDelete, role, allUsers, teamMembers }) => 
                     <MenuItem value=""><em>Unassigned</em></MenuItem>
                     {teamMembers.map(u => (
                         <MenuItem key={u.id} value={u.id}>
-                          {u.username || u.full_name || u.email}
+                          {u.full_name || u.email}
                         </MenuItem>
                     ))}
                 </Select>
             </FormControl>
          ) : (
              <div style={{ marginRight: '10px', fontSize: '0.9em', color: '#666', alignSelf: 'center' }}>
-                 {assignedUser ? (assignedUser.username || assignedUser.full_name || assignedUser.email) : 'Unassigned'}
+                 {assignedUser ? (assignedUser.full_name || assignedUser.email) : 'Unassigned'}
              </div>
          )}
 
@@ -118,7 +118,7 @@ const AddMemberControl = ({ teamId, allUsers, addMember }) => {
         >
           {allUsers.map((user) => (
             <MenuItem key={user.id} value={user.id}>
-              {user.username || user.full_name || user.email}
+              {user.full_name || user.email}
             </MenuItem>
           ))}
         </Select>
@@ -155,7 +155,7 @@ const RemoveMemberControl = ({ teamId, teamMembers, removeMember }) => {
         >
           {teamMembers.map((user) => (
             <MenuItem key={user.id} value={user.id}>
-              {user.username || user.full_name|| user.email}
+              {user.full_name|| user.email}
             </MenuItem>
           ))}
         </Select>
@@ -303,7 +303,7 @@ function TodoList({ username, email, userId, full_name, onLogout }) {
     renameTeam,
     addMember,
     removeMember // Destructure the new function
-  } = useTodoManager(onLogout, username || full_name || email);
+  } = useTodoManager(onLogout, full_name || email);
 
   // 2. Local State
   const [newTask, setNewTask] = useState();

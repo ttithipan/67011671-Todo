@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 // --- Constants ---
 const API_URL = `http://${import.meta.env.VITE_API_HOST || 'localhost'}:${import.meta.env.VITE_API_PORT || '3001'}`;
 
-export const useTodoManager = (onLogout, username) => {
+export const useTodoManager = (onLogout, nameOfUser) => {
   const [teamRoles, setTeamRoles] = useState([]);
   const [todos, setTodos] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -132,7 +132,7 @@ export const useTodoManager = (onLogout, username) => {
   const createTeam = async () => {
     const res = await apiCall('teams', {
       method: 'POST',
-      body: { name: `Team of ${username}` }
+      body: { name: `Team of ${nameOfUser}` }
     });
     refreshData();
   };
