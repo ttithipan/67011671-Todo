@@ -23,7 +23,9 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `unique_username` (`username`),
   UNIQUE KEY `unique_email` (`email`),
-  UNIQUE KEY `unique_google` (`google_id`)
+  UNIQUE KEY `unique_google` (`google_id`),
+  `is_assignee` tinyint(1) NOT NULL DEFAULT '0',
+  `expertise` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `team_members` (
